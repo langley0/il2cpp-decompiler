@@ -528,7 +528,8 @@ namespace ILSpy.DotNet
         public IParameter? GetParameter(IList<IParameter> parameters)
         {
             int i = GetParameterIndex();
-            if ((uint)i < (uint)parameters.Count) {
+            if ((uint)i < (uint)parameters.Count)
+            {
                 return parameters[i];
             }
             return null;
@@ -536,93 +537,99 @@ namespace ILSpy.DotNet
 
         public ITypeSig? GetArgumentType(IMethodSig? methodSig, ITypeDefOrRef? declaringType)
         {
-            if (methodSig is null) {
-                return null;
-            }
-            int index = GetParameterIndex();
-            if (index == 0 && methodSig.ImplicitThis)
-            {
-                if (declaringType is null) {
-                    return null;
-                }
-                ITypeSig declSig;
-                bool isValueType;
-                if (declaringType is ITypeSpec spec)
-                {
-                    declSig = spec.TypeSig;
-                    isValueType = declSig.IsValueType;
-                }
-                else
-                {
-                    // Consistent with ParameterList.UpdateThisParameterType
-                    var td = declaringType.ResolveTypeDef();
-                    if (td is null) {
-                        return declaringType.ToTypeSig();
-                    }
-                    isValueType = td.IsValueType;
-                    ClassOrValueTypeSig cvSig = isValueType ? new ValueTypeSig(td) : new ClassSig(td);
-                    if (td.HasGenericParameters)
-                    {
-                        int gpCount = td.GenericParameters.Count;
-                        var genArgs = new List<ITypeSig>(gpCount);
-                        for (int i = 0; i < gpCount; i++)
-                            genArgs.Add(new GenericVar(i, td));
-                        declSig = new GenericInstSig(cvSig, genArgs);
-                    }
-                    else
-                        declSig = cvSig;
-                }
-                return isValueType ? new ByRefSig(declSig) : declSig;
-            }
-            if (methodSig.ImplicitThis)
-                index--;
-            if ((uint)index < (uint)methodSig.Params.Count)
-                return methodSig.Params[index];
-            return null;
+            // if (methodSig is null)
+            // {
+            //     return null;
+            // }
+            // int index = GetParameterIndex();
+            // if (index == 0 && methodSig.ImplicitThis)
+            // {
+            //     if (declaringType is null)
+            //     {
+            //         return null;
+            //     }
+            //     ITypeSig declSig;
+            //     bool isValueType;
+            //     if (declaringType is ITypeSpec spec)
+            //     {
+            //         declSig = spec.TypeSig;
+            //         isValueType = declSig.IsValueType;
+            //     }
+            //     else
+            //     {
+            //         // Consistent with ParameterList.UpdateThisParameterType
+            //         var td = declaringType.ResolveTypeDef();
+            //         if (td is null)
+            //         {
+            //             return declaringType.ToTypeSig();
+            //         }
+            //         isValueType = td.IsValueType;
+            //         ClassOrValueTypeSig cvSig = isValueType ? new ValueTypeSig(td) : new ClassSig(td);
+            //         if (td.HasGenericParameters)
+            //         {
+            //             int gpCount = td.GenericParameters.Count;
+            //             var genArgs = new List<ITypeSig>(gpCount);
+            //             for (int i = 0; i < gpCount; i++)
+            //                 genArgs.Add(new GenericVar(i, td));
+            //             declSig = new GenericInstSig(cvSig, genArgs);
+            //         }
+            //         else
+            //             declSig = cvSig;
+            //     }
+            //     return isValueType ? new ByRefSig(declSig) : declSig;
+            // }
+            // if (methodSig.ImplicitThis)
+            //     index--;
+            // if ((uint)index < (uint)methodSig.Params.Count)
+            //     return methodSig.Params[index];
+            // return null;
+            throw new NotImplementedException();
         }
 
-      
-        public Instruction Clone() =>
-            new()
+
+        public Instruction Clone()
+        {
+            return new()
             {
                 Offset = Offset,
                 OpCode = OpCode,
                 Operand = Operand,
                 SequencePoint = SequencePoint,
             };
+        }
 
-        /// <inheritdoc/>
-        public override string ToString() => InstructionPrinter.ToString(this);
+
+        // public override string ToString() => InstructionPrinter.ToString(this);
     }
 
-    static partial class Extensions
-    {
-        /// <summary>
-        /// Gets the opcode or <see cref="OpCodes.UNKNOWN1"/> if <paramref name="self"/> is <c>null</c>
-        /// </summary>
-        /// <param name="self">this</param>
-        /// <returns></returns>
-        public static OpCode GetOpCode(this Instruction self) => self?.OpCode ?? OpCodes.UNKNOWN1;
+    // static partial class Extensions
+    // {
+    //     /// <summary>
+    //     /// Gets the opcode or <see cref="OpCodes.UNKNOWN1"/> if <paramref name="self"/> is <c>null</c>
+    //     /// </summary>
+    //     /// <param name="self">this</param>
+    //     /// <returns></returns>
+    //     public static OpCode GetOpCode(this Instruction self) => self?.OpCode ?? OpCodes.UNKNOWN1;
 
-        /// <summary>
-        /// Gets the operand or <c>null</c> if <paramref name="self"/> is <c>null</c>
-        /// </summary>
-        /// <param name="self">this</param>
-        /// <returns></returns>
-        public static object GetOperand(this Instruction self) => self?.Operand;
+    //     /// <summary>
+    //     /// Gets the operand or <c>null</c> if <paramref name="self"/> is <c>null</c>
+    //     /// </summary>
+    //     /// <param name="self">this</param>
+    //     /// <returns></returns>
+    //     public static object GetOperand(this Instruction self) => self?.Operand;
 
-        /// <summary>
-        /// Gets the offset or 0 if <paramref name="self"/> is <c>null</c>
-        /// </summary>
-        /// <param name="self">this</param>
-        /// <returns></returns>
-        public static uint GetOffset(this Instruction self) => self?.Offset ?? 0;
+    //     /// <summary>
+    //     /// Gets the offset or 0 if <paramref name="self"/> is <c>null</c>
+    //     /// </summary>
+    //     /// <param name="self">this</param>
+    //     /// <returns></returns>
+    //     public static uint GetOffset(this Instruction self) => self?.Offset ?? 0;
 
-        /// <summary>
-        /// Gets the sequence point or <c>null</c> if <paramref name="self"/> is <c>null</c>
-        /// </summary>
-        /// <param name="self">this</param>
-        /// <returns></returns>
-        public static dnlib.DotNet.Pdb.SequencePoint GetSequencePoint(this Instruction self) => self?.SequencePoint;
-    }
+    //     /// <summary>
+    //     /// Gets the sequence point or <c>null</c> if <paramref name="self"/> is <c>null</c>
+    //     /// </summary>
+    //     /// <param name="self">this</param>
+    //     /// <returns></returns>
+    //     public static SequencePoint GetSequencePoint(this Instruction self) => self?.SequencePoint;
+    // }
 }

@@ -6,7 +6,7 @@ namespace ILSpy.Interfaces
     {
         Version Version { get; set; }
         AssemblyAttributes Attributes { get; set; }
-        IPublicKeyOrToken PublicKeyOrToken { get; }
+        IPublicKey PublicKeyOrToken { get; }
         UTF8String Culture { get; set; }
         string FullNameToken { get; }
         bool HasPublicKey { get; set; }

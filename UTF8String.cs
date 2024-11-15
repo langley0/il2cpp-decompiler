@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -41,9 +42,9 @@ namespace ILSpy
 
         public static bool operator <=(UTF8String left, UTF8String right) => CompareTo(left, right) <= 0;
 
-		public static implicit operator string(UTF8String s) => ToSystemString(s) ?? string.Empty;
+        public static implicit operator string(UTF8String s) => ToSystemString(s) ?? string.Empty;
 
-		public static implicit operator UTF8String(string s) => new(s);
+        public static implicit operator UTF8String(string s) => new(s);
 
         public static bool Equals(UTF8String? a, UTF8String? b) => CompareTo(a, b) == 0;
 
@@ -108,10 +109,11 @@ namespace ILSpy
             return null;
         }
 
-        public static bool IsNullOrEmpty(UTF8String utf8)
+        public static bool IsNullOrEmpty([NotNullWhen(false)]UTF8String? utf8)
         {
             return utf8 is null || utf8.data is null || utf8.data.Length == 0;
         }
+
 
         public static int GetHashCode(UTF8String utf8)
         {
@@ -126,13 +128,15 @@ namespace ILSpy
         readonly byte[]? data;
         string? asString;
 
-        public UTF8String(byte[]? data) {
+        public UTF8String(byte[]? data)
+        {
             this.data = data;
-        } 
+        }
 
         public UTF8String(string s)
-			: this(s is null ? null : Encoding.UTF8.GetBytes(s)) {
-		}
+            : this(s is null ? null : Encoding.UTF8.GetBytes(s))
+        {
+        }
 
         public string String
         {
@@ -165,16 +169,16 @@ namespace ILSpy
 
         public bool Contains(string value) => String.Contains(value);
 
-		public bool EndsWith(string value) => String.EndsWith(value);
+        public bool EndsWith(string value) => String.EndsWith(value);
 
-		public bool EndsWith(string value, bool ignoreCase, CultureInfo culture) => String.EndsWith(value, ignoreCase, culture);
+        public bool EndsWith(string value, bool ignoreCase, CultureInfo culture) => String.EndsWith(value, ignoreCase, culture);
 
-		public bool EndsWith(string value, StringComparison comparisonType) => String.EndsWith(value, comparisonType);
+        public bool EndsWith(string value, StringComparison comparisonType) => String.EndsWith(value, comparisonType);
 
-		public bool StartsWith(string value) => String.StartsWith(value);
+        public bool StartsWith(string value) => String.StartsWith(value);
 
-		public bool StartsWith(string value, bool ignoreCase, CultureInfo culture) => String.StartsWith(value, ignoreCase, culture);
+        public bool StartsWith(string value, bool ignoreCase, CultureInfo culture) => String.StartsWith(value, ignoreCase, culture);
 
-		public bool StartsWith(string value, StringComparison comparisonType) => String.StartsWith(value, comparisonType);
+        public bool StartsWith(string value, StringComparison comparisonType) => String.StartsWith(value, comparisonType);
     }
 }

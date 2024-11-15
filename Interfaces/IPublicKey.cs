@@ -1,6 +1,6 @@
 namespace ILSpy.Interfaces
 {
-    public interface IPublicKeyOrToken
+    public interface IPublicKey
     {
     }
 }
